@@ -39,7 +39,7 @@ function App() {
               {Object.entries(statement).map(([k, v]) => (
                 <WordList
                   internalScroll
-                  key={k}
+                  key={`${k}_${v}`}
                   listId={k}
                   listType="CARD"
                   words={v}

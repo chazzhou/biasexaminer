@@ -16,7 +16,7 @@ export const WordList = ({ listId, listType, words }) => {
             <div>
               <div style={{ display: "flex" }} ref={dropProvided.innerRef}>
                 {words.map((word, index) => (
-                  <Draggable key={word} draggableId={word} index={index}>
+                  <Draggable key={`${word}_${index}`} draggableId={`${word}_${index}`} index={index}>
                     {(dragProvided) => (
                       <div
                         {...dragProvided.dragHandleProps}
