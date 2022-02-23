@@ -1,3 +1,6 @@
+.ant-layout {
+  height: 100vh;
+}
 .site-layout-content {
   min-height: 280px;
   padding: 24px;
