@@ -9,11 +9,12 @@ import { WordList } from "./WordList.tsx";
 import { Layout } from 'antd';
 
 import { CloudUploadOutlined } from '@ant-design/icons';
+import { generateInputs } from "./generateInputs";
 
 const { Header, Footer, Sider, Content } = Layout;
 
 function App() {
-  const provided_labels = ["{Countries}","{Races}","{Universities}"];
+  const provided_labels = ["{companies}","{race singular}","{race plural}", "{jobs}", "{nationalities}" ];
   const { Title } = Typography;
   const { Search } = Input;
   const [statement, setStatement] = useState({Labels: provided_labels,
@@ -23,7 +24,8 @@ function App() {
     if (value === "") {
       return;
     }
-    const splitted = value.trim().replace(/\s\s+/g, ' ').split(" ");
+    let splitted = value.trim().replace(/\s\s+/g, ' ').split(" ");
+    splitted.push("<mask>")
     setStatement({ Labels: provided_labels,
                     UserInputs: splitted });
   };
@@ -37,10 +39,7 @@ function App() {
     if (statement.UserInputs.length === 0) {
       return;
     }
-    console.log(statement.UserInputs);
-    var sentence = statement.UserInputs.join(" ");
-    sentence = capitalizeFirstLetterAndAppendPeriod(sentence);
-    console.log(sentence)
+    console.log(generateInputs(statement["UserInputs"])); 
   };
 
   return (
