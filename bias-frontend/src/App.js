@@ -10,13 +10,16 @@ import { Layout } from 'antd';
 const { Header, Footer, Sider, Content } = Layout;
 
 function App() {
+  const provided_labels = ["{Countries}","{Races}","{Universities}"];
   const { Title } = Typography;
   const { Search } = Input;
-  const [statement, setStatement] = useState({});
+  const [statement, setStatement] = useState({Labels: provided_labels,
+    UserInputs: []});
 
   const onSubmit = (value) => {
     const splitted = value.split(" ");
-    setStatement({ a: splitted });
+    setStatement({ Labels: provided_labels,
+                    UserInputs: splitted });
   };
 
   return (
@@ -35,17 +38,17 @@ function App() {
         <Breadcrumb.Item>Examine</Breadcrumb.Item>
       </Breadcrumb>
       <div className="site-layout-content">
-      <Row align="middle">
-        <Col offset={10}>
+      <Row justify="space-around" align="middle">
+        <Col>
           <Search
             placeholder="Please enter a statement"
             enterButton="Submit"
             onSearch={onSubmit}
+            size="large"
           />
         </Col>
         <Divider></Divider>
-        <Col offset={10}>
-          <DragDropContext
+        <DragDropContext
             onDragEnd={({ destination, source }) => {
               if (!destination) {
                 return;
@@ -54,23 +57,34 @@ function App() {
               setStatement(reorderStatement(statement, source, destination));
             }}
           >
+        <Col>
             <div>
-              {Object.entries(statement).map(([k, v]) => (
+              <WordList
+                internalScroll
+                key="Labels"
+                listId="Labels"
+                listType="CARD"
+                words={statement["Labels"]}
+              />
+            </div>
+          </Col>
+        <Divider></Divider>
+        <Col>
+            <div>
                 <WordList
                   internalScroll
-                  key={`${k}_${v}`}
-                  listId={k}
+                  key="UserInputs"
+                  listId="UserInputs"
                   listType="CARD"
-                  words={v}
+                  words={statement["UserInputs"]}
                 />
-              ))}
             </div>
-          </DragDropContext>
           </Col>
+          </DragDropContext>
       </Row>
       </div>
     </Content>
-    <Footer style={{ textAlign: 'center' }}>BiasExaminer ©2022</Footer>
+    <Footer style={{ textAlign: 'center' }}>BiasExaminer ©2022 V0.0.1</Footer>
   </Layout>
     </>
   );

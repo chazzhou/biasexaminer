@@ -1,5 +1,5 @@
 import React from "react";
-import { Droppable, Draggable, DroppableProvided } from "react-beautiful-dnd";
+import { Droppable, Draggable } from "react-beautiful-dnd";
 import { Tag } from "antd";
 
 export const WordList = ({ listId, listType, words }) => {
