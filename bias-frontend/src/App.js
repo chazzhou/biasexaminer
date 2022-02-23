@@ -2,11 +2,14 @@ import logo from "./logo.svg";
 import "antd/dist/antd.css";
 import "./App.css"
 import { useState } from "react";
-import { Typography, Row, Col, Input, Menu, Breadcrumb, Divider } from "antd";
+import { Typography, Row, Col, Input, Menu, Breadcrumb, Divider, Button } from "antd";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { reorderStatement } from "./reorder";
 import { WordList } from "./WordList.tsx";
 import { Layout } from 'antd';
+
+import { CloudUploadOutlined } from '@ant-design/icons';
+
 const { Header, Footer, Sider, Content } = Layout;
 
 function App() {
@@ -20,9 +23,24 @@ function App() {
     if (value === "") {
       return;
     }
-    const splitted = value.split(" ");
+    const splitted = value.trim().replace(/\s\s+/g, ' ').split(" ");
     setStatement({ Labels: provided_labels,
                     UserInputs: splitted });
+  };
+
+  const capitalizeFirstLetterAndAppendPeriod = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1) + ".";
+  }
+  
+
+  const onExamine = () => {
+    if (statement.UserInputs.length === 0) {
+      return;
+    }
+    console.log(statement.UserInputs);
+    var sentence = statement.UserInputs.join(" ");
+    sentence = capitalizeFirstLetterAndAppendPeriod(sentence);
+    console.log(sentence)
   };
 
   return (
@@ -84,6 +102,13 @@ function App() {
             </div>
           </Col>
           </DragDropContext>
+          <Divider></Divider>
+          <Col>
+            <Button type="primary" icon={<CloudUploadOutlined />} size="large"
+            onClick={onExamine}>
+              Examine Bias
+            </Button>
+          </Col>
       </Row>
       </div>
     </Content>
