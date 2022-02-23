@@ -1,8 +1,17 @@
 import React from "react";
 import { Droppable, Draggable } from "react-beautiful-dnd";
-import { Tag } from "antd";
+import { Tag, Empty } from "antd";
 
 export const WordList = ({ listId, listType, words }) => {
+  if (words.length === 0) {
+    return (<Empty 
+      description={
+      <span>
+        No Data<br/>
+        Please submit a sentence first.
+      </span>
+    }/>)
+  }
   return (
     <Droppable
       droppableId={listId}
