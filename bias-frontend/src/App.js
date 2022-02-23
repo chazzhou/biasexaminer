@@ -17,6 +17,9 @@ function App() {
     UserInputs: []});
 
   const onSubmit = (value) => {
+    if (value === "") {
+      return;
+    }
     const splitted = value.split(" ");
     setStatement({ Labels: provided_labels,
                     UserInputs: splitted });
