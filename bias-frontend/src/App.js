@@ -33,13 +33,25 @@ function App() {
   const capitalizeFirstLetterAndAppendPeriod = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1) + ".";
   }
+
+  const getRepliesFromBackend = async (sentences) => {
+    let results = [];
+    await Promise.all(
+      sentences.map(async (item) => {
+        const result = await fetch(`http://165.124.25.23:5000/RunTest?TestSentence=${item}`);
+        result.json().then((item) => results.push(item.results));
+      }));
+    console.log('Items processed');
+    return results;
+  };
   
 
   const onExamine = () => {
     if (statement.UserInputs.length === 0) {
       return;
     }
-    console.log(generateInputs(statement["UserInputs"])); 
+    let generatedSentences = generateInputs(statement["UserInputs"]);
+    getRepliesFromBackend(generatedSentences).then((results) => console.log(results));
   };
 
   return (
