@@ -7,9 +7,14 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { reorderStatement } from "./reorder";
 import { WordList } from "./WordList.tsx";
 import { Layout } from 'antd';
+import ReactDOM from 'react-dom';
 
 import { CloudUploadOutlined } from '@ant-design/icons';
 import { generateInputs } from "./generateInputs";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Pie } from 'react-chartjs-2';
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const { Header, Footer, Sider, Content } = Layout;
 
@@ -400,13 +405,16 @@ const data = [
     ]
   ]
 ];
+let labels = [];
+let frequencies= [];
+const wordSet = new Set([]);
+const wordCount = {};
+const wordDict = {};
+const commonalityScore = {};
+let chartdata;
 
 const analyze = (results) => {
   results = data;
-  const wordSet = new Set([]);
-  const wordCount = {};
-  const wordDict = {};
-  const commonalityScore = {};
   for (let index in results) {
     for (const [key, value] of Object.entries(results[index][1])) {
       let token_word = value.token_str.trim();
@@ -429,11 +437,89 @@ const analyze = (results) => {
       }
     }
   };
-  console.log(wordSet);
-  console.log(wordDict);
-  console.log(wordCount);
-  console.log(commonalityScore);
+  console.log("wordSet",wordSet);
+  console.log("wordDict",wordDict);
+  console.log("wordCount",wordCount);
+  console.log("commonalityScore",commonalityScore);
+
+  sortWordCount();
+  console.log("labels", labels);
+  console.log("frequencies", frequencies);
+
+  chartdata = {
+    labels: labels,
+    datasets: [
+      {
+        label: '# of Votes',
+        data: frequencies,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };  
+
+  console.log("chartdata",chartdata);
+
+  const element = (
+    <Pie data={chartdata} />
+  );
+  ReactDOM.render(element, document.getElementById('chart'));
+  
 };
+
+function sortWordCount()
+{
+  labels = []
+  frequencies = []
+  for (const [key, value] of Object.entries(wordCount)) {
+    labels.push(key);
+    frequencies.push(value);
+  }
+
+  console.log("labels", labels);
+  console.log("frequencies", frequencies);
+  
+  let arrayOfObj = labels.map(function(d, i) {
+    return {
+      label: d,
+      data: frequencies[i] || 0
+    };
+  });
+
+
+  
+  let sortedArrayOfObj = arrayOfObj.sort(function(a, b) {
+    return b.data>a.data;
+  });
+
+  let newArrayLabel = [];
+  let newArrayData = [];
+
+  sortedArrayOfObj.forEach(function(d){
+    newArrayLabel.push(d.label);
+    newArrayData.push(d.data);
+  });
+
+  labels = newArrayLabel;
+  frequencies = newArrayData;
+};
+
+
 
 function App() {
   const provided_labels = ["{companies}","{race singular}","{race plural}", "{jobs}", "{nationalities}" ];
@@ -442,7 +528,7 @@ function App() {
   const [statement, setStatement] = useState({Labels: provided_labels,
     UserInputs: []});
 
-  analyze(data);
+  
 
   const onSubmit = (value) => {
     if (value === "") {
@@ -475,8 +561,12 @@ function App() {
       return;
     }
     let generatedSentences = generateInputs(statement["UserInputs"]);
-    getRepliesFromBackend(generatedSentences).then((results) => console.log(results));
+    getRepliesFromBackend(generatedSentences).then((results) => analyze(results));
+   
   };
+  
+
+
 
   return (
     <>
@@ -544,10 +634,16 @@ function App() {
               Examine Bias
             </Button>
           </Col>
+          <Divider></Divider>
+          <Col>
+            <div id="chart" ></div>
+          </Col>
       </Row>
+      
+      
       </div>
     </Content>
-    <Footer style={{ textAlign: 'center' }}>BiasExaminer ©2022 V0.0.1</Footer>
+    <Footer style={{ textAlign: 'center' }}>BiasExaminer ©2022 V0.0.2</Footer>
   </Layout>
     </>
   );

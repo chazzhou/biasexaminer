@@ -1,6 +1,7 @@
 .ant-layout {
-  height: 100vh;
+  min-height: 100vh;
 }
+
 .site-layout-content {
   min-height: 280px;
   padding: 24px;
@@ -24,3 +25,6 @@
   [data-theme="dark"] .site-layout-content {
     background: #141414;
   }
+
+
+  
