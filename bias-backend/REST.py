@@ -1,6 +1,6 @@
 import threading
 import asyncio
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, make_response
 from transformers import pipeline
 
 
@@ -15,7 +15,9 @@ def test():
     asyncio.set_event_loop(asyncio.new_event_loop())
     loop = asyncio.get_event_loop()
     results = loop.run_until_complete(RoBERTA(TestSentence))
-    return jsonify({"results": results})
+    resp = make_response(jsonify({"results": results}), 200)
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    return resp
 
 async def RoBERTA(string):
     unmasker = pipeline('fill-mask', model='roberta-base')
