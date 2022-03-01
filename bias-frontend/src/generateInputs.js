@@ -35,7 +35,7 @@ export const generateInputs = (inputs) => {
 
       let sentence = final.join(" ");
       sentence = capitalizeFirstLetterAndAppendPeriod(sentence);
-      sentences.push(sentence);
+      sentences.push([items[j], sentence]);
     }
   }
   return sentences;
