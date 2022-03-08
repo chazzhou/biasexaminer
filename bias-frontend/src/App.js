@@ -29,7 +29,7 @@ ChartJS.register(CategoryScale, LinearScale,BarElement, Title, ArcElement, Toolt
 
 const { Header, Footer, Sider, Content } = Layout;
 
-let labels = [];
+let pielabels = [];
 let frequencies = [];
 const wordSet = new Set([]);
 const wordCount = {};
@@ -67,6 +67,20 @@ const columns = [
 let dataSource = [];
 
 const analyze = (results) => {
+  // Table
+  var counter = 1;
+  for (const group of results) {
+    for (const phrase of group[1]) {
+      let dummy = {
+        ...phrase["emotions"],
+        phrase: phrase["sequence"],
+        key: counter.toString(),
+      };
+      dataSource.push(dummy);
+      counter += 1;
+    }
+  }
+  console.log(dataSource);
   for (let index in results) {
     for (const [key, value] of Object.entries(results[index][1])) {
       let token_word = value.token_str.trim();
@@ -95,11 +109,11 @@ const analyze = (results) => {
   console.log("commonalityScore", commonalityScore);
 
   sortWordCount();
-  console.log("labels", labels);
+  console.log("labels", pielabels);
   console.log("frequencies", frequencies);
 
   chartdata = {
-    labels: labels,
+    labels: pielabels,
     datasets: [
       {
         label: "# of Votes",
@@ -140,16 +154,16 @@ const analyze = (results) => {
       },
       title: {
         display: true,
-        text: 'Chart.js Bar Chart',
+        text: 'The Number of Shared Results for Each Target Word',
       },
     },
   };
-  const commonalityLabels = Object.keys(commonalityScore);
+  const labels = Object.keys(commonalityScore);
   const commonalityValues = Object.values(commonalityScore);
-  console.log('commonalityLabels',commonalityLabels);
+  console.log('commonalityLabels',labels);
   console.log('commonalityValues',commonalityValues);
   const bardata = {
-    commonalityLabels,
+    labels,
     datasets: [
       {
         label: 'Commonality Scores',
@@ -159,7 +173,7 @@ const analyze = (results) => {
     ],
   };
   const barchart = (
-    <Bar options={options} data={bardata} />
+    <Bar options={options} height={"200%"} data={bardata} />
   );
   ReactDOM.render(pie, document.getElementById('piechart'));
   ReactDOM.render(barchart, document.getElementById('barchart'));
@@ -169,17 +183,17 @@ const analyze = (results) => {
 };
 
 function sortWordCount() {
-  labels = [];
+  pielabels = [];
   frequencies = [];
   for (const [key, value] of Object.entries(wordCount)) {
-    labels.push(key);
+    pielabels.push(key);
     frequencies.push(value);
   }
 
-  console.log("labels", labels);
+  console.log("labels", pielabels);
   console.log("frequencies", frequencies);
 
-  let arrayOfObj = labels.map(function (d, i) {
+  let arrayOfObj = pielabels.map(function (d, i) {
     return {
       label: d,
       data: frequencies[i] || 0,
@@ -198,7 +212,7 @@ function sortWordCount() {
     newArrayData.push(d.data);
   });
 
-  labels = newArrayLabel;
+  pielabels = newArrayLabel;
   frequencies = newArrayData;
 }
 
@@ -332,17 +346,18 @@ function App() {
                   Examine Bias
                 </Button>
               </Col>
+              
               <Divider></Divider>
               <Col>
-                <div id="table"></div>
-              </Col>
-              <Divider></Divider>
-              <Col>
-                <div id="chart"></div>
+                <div id="piechart"></div>
               </Col>
               <Divider></Divider>
               <Col>
                 <div id="barchart" ></div>
+              </Col>
+              <Divider></Divider>
+              <Col>
+                <div id="table"></div>
               </Col>
             </Row>
           </div>
