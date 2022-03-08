@@ -249,12 +249,21 @@ function App() {
     let results = [];
     await Promise.all(
       sentences.map(async (item) => {
-        
-        const result = await fetch(
+        await fetch(
           `http://165.124.25.24:5000/RunTest?TestSentence=${item[1]}&TargetWord=${item[0]}`
-        );
-        // console.log("emotions", result['emotions']);
-        result.json().then((item) => results.push([item.target, item.results]));
+        ).then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error('Something went wrong');
+        })
+        .then((responseJson) => {
+          results.push([responseJson.target, responseJson.results]);
+        })
+        .catch((error) => {
+          console.log(error)
+        });
+        
       })
     );
     console.log("Items processed");
