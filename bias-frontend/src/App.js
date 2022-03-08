@@ -553,6 +553,7 @@ function App() {
         result.json().then((item) => results.push([item.target, item.results]));
       }));
     console.log('Items processed');
+    console.log("results",results);
     return results;
   };
   
