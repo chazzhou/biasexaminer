@@ -223,6 +223,7 @@ function App() {
     "{race plural}",
     "{jobs}",
     "{nationalities}",
+    "{universities}",
   ];
   const { Title } = Typography;
   const { Search } = Input;
@@ -248,6 +249,7 @@ function App() {
     let results = [];
     await Promise.all(
       sentences.map(async (item) => {
+        
         const result = await fetch(
           `http://165.124.25.24:5000/RunTest?TestSentence=${item[1]}&TargetWord=${item[0]}`
         );

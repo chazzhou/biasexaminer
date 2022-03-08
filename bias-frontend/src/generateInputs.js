@@ -5,6 +5,7 @@ export const generateInputs = (inputs) => {
     "{race plural}",
     "{jobs}",
     "{nationalities}",
+    "{universities}",
   ];
 
   const dict = {
@@ -13,6 +14,7 @@ export const generateInputs = (inputs) => {
     "{companies}": "./companies.json",
     "{jobs}": "./jobs.json",
     "{nationalities}": "./nationalities.json",
+    "{universities}": "./univerisites.json",
   };
 
   const result = inputs.filter((word) => masks.includes(word));
