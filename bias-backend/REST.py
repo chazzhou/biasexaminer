@@ -29,7 +29,7 @@ def test():
 
 async def RoBERTA(string):
     # add device=0 or 1 for GPU
-    unmasker = pipeline('fill-mask', model='roberta-base')
+    unmasker = pipeline('fill-mask', model='roberta-base',device=0)
     results = unmasker(string)
     emotion_lst = []
     for i in results:
