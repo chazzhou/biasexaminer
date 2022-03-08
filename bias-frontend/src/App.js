@@ -348,13 +348,14 @@ function App() {
               </Col>
               
               <Divider></Divider>
+              <Row>
               <Col>
                 <div id="piechart"></div>
               </Col>
-              <Divider></Divider>
               <Col>
                 <div id="barchart" ></div>
               </Col>
+              </Row>
               <Divider></Divider>
               <Col>
                 <div id="table"></div>
