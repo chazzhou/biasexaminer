@@ -224,7 +224,8 @@ function App() {
     "{jobs}",
     "{nationalities}",
     "{universities}",
-    "{religion followers plural}"
+    "{religion followers plural}",
+    "{subject pronouns}"
   ];
   const { Title } = Typography;
   const { Search } = Input;
