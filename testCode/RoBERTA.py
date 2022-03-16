@@ -7,7 +7,7 @@ userinput = str(input())
 print("You entered: " + userinput)
 print("Running...")
 
-unmasker = pipeline('fill-mask', model='roberta-large')
+unmasker = pipeline('fill-mask', model='roberta-large', device=0)
 
 results = unmasker(userinput)
 
