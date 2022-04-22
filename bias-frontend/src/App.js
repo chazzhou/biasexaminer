@@ -12,6 +12,7 @@ import {
   Divider,
   Button,
   Table,
+  Select
 } from "antd";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { reorderStatement } from "./reorder";
@@ -24,9 +25,14 @@ import { generateInputs } from "./generateInputs";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title, } from 'chart.js';
 import { Pie, Bar } from 'react-chartjs-2';
 
+import Texty from 'rc-texty';
+import {Animated} from "react-animated-css";
+
+import templates from "./templates.json"
+
 ChartJS.register(CategoryScale, LinearScale,BarElement, Title, ArcElement, Tooltip, Legend);
 
-
+const { Option } = Select;
 const { Header, Footer, Sider, Content } = Layout;
 
 let pielabels = [];
@@ -234,6 +240,10 @@ function App() {
     UserInputs: [],
   });
 
+  const [hide, setHide] = useState({
+    hide:true
+  })
+
   const onSubmit = (value) => {
     if (value === "") {
       return;
@@ -283,6 +293,12 @@ function App() {
     );
   };
 
+  const handleChange = (value) => {
+    console.log(`selected ${value}`);
+    let splitted = (templates[value]["default_1"]).trim().replace(/\s\s+/g, " ").split(" ");
+    setStatement({ Labels: provided_labels, UserInputs: splitted });
+    setHide(false);
+  }
   return (
     <>
       <Layout className="layout">
@@ -294,7 +310,6 @@ function App() {
             defaultSelectedKeys={["Examine"]}
           >
             <Menu.Item key="Examine">Examine</Menu.Item>
-            <Menu.Item key="Settings">Settings</Menu.Item>
           </Menu>
         </Header>
         <Content style={{ padding: "0 50px" }}>
@@ -304,6 +319,15 @@ function App() {
           </Breadcrumb>
           <div className="site-layout-content">
             <Row justify="space-around" align="middle">
+              <Col align="middle">
+              <Title><Texty>I want to explore biases in</Texty></Title>
+              <Select size="large" defaultValue="..." style={{ width: 200 }} onChange={handleChange}>
+                {Object.keys(templates).map((value) => (<Option key={`temp_options_${value}`} value={value}>{value}</Option>))}
+              </Select>
+              </Col>
+              { !hide ?
+              <Animated animationIn="fadeInRightBig" animationOut="fadeOut">
+              <Divider></Divider>
               <Col>
                 <Search
                   placeholder="Please enter a statement"
@@ -332,6 +356,7 @@ function App() {
                       listId="Labels"
                       listType="CARD"
                       words={statement["Labels"]}
+                      color="red"
                     />
                   </div>
                 </Col>
@@ -344,12 +369,13 @@ function App() {
                       listId="UserInputs"
                       listType="CARD"
                       words={statement["UserInputs"]}
+                      color="default"
                     />
                   </div>
                 </Col>
               </DragDropContext>
               <Divider></Divider>
-              <Col>
+              <Col align="center">
                 <Button
                   type="primary"
                   icon={<CloudUploadOutlined />}
@@ -373,11 +399,13 @@ function App() {
               <Col>
                 <div id="table"></div>
               </Col>
+              </Animated>
+              : null }
             </Row>
           </div>
         </Content>
         <Footer style={{ textAlign: "center" }}>
-          BiasExaminer ©2022 V0.0.2
+          BiasExaminer ©2022 V0.0.3
         </Footer>
       </Layout>
     </>

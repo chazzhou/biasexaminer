@@ -2,7 +2,7 @@ import React from "react";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import { Tag, Empty } from "antd";
 
-export const WordList = ({ listId, listType, words }) => {
+export const WordList = ({ listId, listType, words, color }) => {
   if (words.length === 0) {
     return (<Empty 
       description={
@@ -32,7 +32,7 @@ export const WordList = ({ listId, listType, words }) => {
                         {...dragProvided.draggableProps}
                         ref={dragProvided.innerRef}
                       >
-                        <Tag>{word}</Tag>
+                        <Tag color={color}>{word}</Tag>
                       </div>
                     )}
                   </Draggable>
